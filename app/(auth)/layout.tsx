@@ -1,10 +1,7 @@
 import React from "react";
+import { TLayoutProps } from "@/lib/typings";
 
-type LayoutProps = {
-  children: React.ReactNode;
-};
-
-const AuthLayout = ({ children }: LayoutProps) => {
+const AuthLayout = ({ children }: TLayoutProps) => {
   return (
     <div className="h-full flex items-center justify-center">{children}</div>
   );
