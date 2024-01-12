@@ -12,7 +12,7 @@ const DashboardLayout = ({ children }: TLayoutProps) => {
       <div className="hidden md:flex flex-col h-full bg-gray-50 w-56 fixed inset-y-0 z-50">
         <Sidebar />
       </div>
-      <main className="md:pl-56 md:pt-[80px] min-h-full">{children}</main>
+      <main className="md:pl-56 pt-[80px] min-h-full">{children}</main>
     </div>
   );
 };
