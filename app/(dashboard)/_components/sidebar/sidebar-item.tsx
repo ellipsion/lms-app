@@ -21,7 +21,7 @@ const SidebarItem = ({ icon: Icon, label, href }: sidebarItemProps) => {
       type="button"
       onClick={changeRoute}
       className={cn(
-        "flex items-center font-medium text-center gap-x-2 text-slate-500 pl-6 transition-all hover:text-slate-600 hover:bg-slate-300/20",
+        "flex items-center text-sm font-semibold text-center gap-x-2 text-slate-500 pl-6 transition-all hover:text-slate-600 hover:bg-slate-300/20",
         isActive &&
           "text-sky-700 hover:text-sky-700 bg-sky-200/20 hover:bg-sky-200/20"
       )}
