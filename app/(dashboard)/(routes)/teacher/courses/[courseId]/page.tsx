@@ -7,6 +7,7 @@ import { LayoutDashboard } from "lucide-react";
 import TitleForm from "./_components/title-form";
 
 import { IconBadge } from "@/components/custom/icon-badge";
+import DescriptionForm from "./_components/description-form";
 
 interface PageProps {
   params: {
@@ -57,6 +58,7 @@ const CourseDetailPage = async ({ params }: PageProps) => {
             <h1 className="text-xl">Customize your course</h1>
           </div>
           <TitleForm initialData={course} courseId={courseId} />
+          <DescriptionForm initialData={course} courseId={courseId} />
         </div>
       </div>
     </div>

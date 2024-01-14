@@ -2,13 +2,18 @@
 
 import * as z from "zod";
 import axios from "axios";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { Course } from "@prisma/client";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Ghost, Pencil } from "lucide-react";
+import { Pencil } from "lucide-react";
 
-import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Form,
   FormControl,
@@ -16,30 +21,26 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { useState } from "react";
-import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
 
-interface TitleFormProps {
-  initialData: {
-    title: string;
-  };
+interface DescriptionFormProps {
+  initialData: Course;
   courseId: string;
 }
 
 const formSchema = z.object({
-  title: z.string().min(1, { message: "Title is required" }),
+  description: z.string().min(1, { message: "Description is required" }),
 });
 
-const TitleForm = ({ initialData, courseId }: TitleFormProps) => {
+const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
   const [isEditing, setEditing] = useState<boolean>(false);
   const router = useRouter();
+  const { description } = initialData;
 
   const toggleEditMode = () => setEditing((current) => !current);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData,
+    defaultValues: { description: description || "" },
   });
 
   const { isSubmitting, isValid } = form.formState;
@@ -67,6 +68,7 @@ const TitleForm = ({ initialData, courseId }: TitleFormProps) => {
       )}
     </Button>
   );
+
   const editForm = (
     <Form {...form}>
       <form
@@ -75,13 +77,13 @@ const TitleForm = ({ initialData, courseId }: TitleFormProps) => {
       >
         <FormField
           control={form.control}
-          name="title"
+          name="description"
           render={({ field }) => (
             <FormItem className="w-full">
               <FormControl>
-                <Input
+                <Textarea
                   disabled={isSubmitting}
-                  placeholder="e.g. Advance Web Development"
+                  placeholder="e.g. 'This course is about...'"
                   {...field}
                 />
               </FormControl>
@@ -97,18 +99,26 @@ const TitleForm = ({ initialData, courseId }: TitleFormProps) => {
       </form>
     </Form>
   );
+
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
       <div className="flex items-center justify-between font-medium">
-        <p className="text-sm text-slate-500">Course Title</p>
+        <p className="text-sm text-slate-500">Course Description</p>
         {editButton}
       </div>
       {isEditing && editForm}
       {!isEditing && (
-        <p className="text-base font-medium">{initialData.title}</p>
+        <p
+          className={cn(
+            "text-sm mt-2",
+            !description && "text-slate-500 italic"
+          )}
+        >
+          {description || "No description"}
+        </p>
       )}
     </div>
   );
 };
 
-export default TitleForm;
+export default DescriptionForm;
