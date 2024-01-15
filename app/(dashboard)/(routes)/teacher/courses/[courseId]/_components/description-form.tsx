@@ -71,10 +71,7 @@ const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
 
   const editForm = (
     <Form {...form}>
-      <form
-        className="flex items-center"
-        onSubmit={form.handleSubmit(handleFormSubmit)}
-      >
+      <form className="" onSubmit={form.handleSubmit(handleFormSubmit)}>
         <FormField
           control={form.control}
           name="description"
@@ -91,7 +88,7 @@ const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
             </FormItem>
           )}
         />
-        <div>
+        <div className="mt-2">
           <Button type="submit" size="sm" disabled={!isValid || isSubmitting}>
             Save
           </Button>

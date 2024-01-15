@@ -8,6 +8,7 @@ import TitleForm from "./_components/title-form";
 
 import { IconBadge } from "@/components/custom/icon-badge";
 import DescriptionForm from "./_components/description-form";
+import ImageForm from "./_components/image-form";
 
 interface PageProps {
   params: {
@@ -59,6 +60,7 @@ const CourseDetailPage = async ({ params }: PageProps) => {
           </div>
           <TitleForm initialData={course} courseId={courseId} />
           <DescriptionForm initialData={course} courseId={courseId} />
+          <ImageForm initialData={course} courseId={courseId} />
         </div>
       </div>
     </div>
