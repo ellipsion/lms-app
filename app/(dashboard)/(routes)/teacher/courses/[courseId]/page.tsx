@@ -9,6 +9,7 @@ import TitleForm from "./_components/title-form";
 import { IconBadge } from "@/components/custom/icon-badge";
 import DescriptionForm from "./_components/description-form";
 import ImageForm from "./_components/image-form";
+import CategoryForm from "./_components/category-form";
 
 interface PageProps {
   params: {
@@ -34,6 +35,12 @@ const CourseDetailPage = async ({ params }: PageProps) => {
   if (!course) {
     return redirect("/");
   }
+
+  const categories = await prisma.category.findMany({
+    orderBy: {
+      name: "asc",
+    },
+  });
 
   const { title, description, price, imageUrl, categoryId } = course;
 
@@ -61,6 +68,14 @@ const CourseDetailPage = async ({ params }: PageProps) => {
           <TitleForm initialData={course} courseId={courseId} />
           <DescriptionForm initialData={course} courseId={courseId} />
           <ImageForm initialData={course} courseId={courseId} />
+          <CategoryForm
+            initialData={course}
+            courseId={courseId}
+            options={categories.map((category) => ({
+              label: category.name,
+              value: category.id,
+            }))}
+          />
         </div>
       </div>
     </div>
