@@ -2,7 +2,12 @@ import { prisma } from "@/lib/db";
 import { auth } from "@clerk/nextjs";
 
 import { redirect } from "next/navigation";
-import { LayoutDashboard } from "lucide-react";
+import {
+  CircleDollarSign,
+  File,
+  LayoutDashboard,
+  ListChecks,
+} from "lucide-react";
 
 import TitleForm from "./_components/title-form";
 
@@ -10,6 +15,7 @@ import { IconBadge } from "@/components/custom/icon-badge";
 import DescriptionForm from "./_components/description-form";
 import ImageForm from "./_components/image-form";
 import CategoryForm from "./_components/category-form";
+import PriceForm from "./_components/price-form";
 
 interface PageProps {
   params: {
@@ -76,6 +82,29 @@ const CourseDetailPage = async ({ params }: PageProps) => {
               value: category.id,
             }))}
           />
+        </div>
+        <div className="space-y-6">
+          <div>
+            <div className="flex items-center gap-x-2">
+              <IconBadge icon={ListChecks} />
+              <h1 className="text-xl">Course chapters</h1>
+            </div>
+            <div>TODO: chapters</div>
+          </div>
+          <div>
+            <div className="flex items-center gap-x-2">
+              <IconBadge icon={CircleDollarSign} />
+              <h1 className="text-xl">Sell your course</h1>
+            </div>
+            <PriceForm courseId={courseId} initialData={course} />
+          </div>
+          <div>
+            <div className="flex items-center gap-x-2">
+              <IconBadge icon={File} />
+              <h1 className="text-xl">Resources &amp; Attachments</h1>
+            </div>
+            <PriceForm courseId={courseId} initialData={course} />
+          </div>
         </div>
       </div>
     </div>
