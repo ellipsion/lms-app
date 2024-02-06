@@ -16,6 +16,7 @@ import DescriptionForm from "./_components/description-form";
 import ImageForm from "./_components/image-form";
 import CategoryForm from "./_components/category-form";
 import PriceForm from "./_components/price-form";
+import AttachmentsForm from "./_components/attachments-form";
 
 interface PageProps {
   params: {
@@ -35,6 +36,13 @@ const CourseDetailPage = async ({ params }: PageProps) => {
     where: {
       id: courseId,
       userId,
+    },
+    include: {
+      attachments: {
+        orderBy: {
+          createdAt: "asc",
+        },
+      },
     },
   });
 
@@ -103,7 +111,7 @@ const CourseDetailPage = async ({ params }: PageProps) => {
               <IconBadge icon={File} />
               <h1 className="text-xl">Resources &amp; Attachments</h1>
             </div>
-            <PriceForm courseId={courseId} initialData={course} />
+            <AttachmentsForm courseId={courseId} initialData={course} />
           </div>
         </div>
       </div>
