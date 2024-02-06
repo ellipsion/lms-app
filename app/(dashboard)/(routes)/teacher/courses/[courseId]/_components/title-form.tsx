@@ -70,7 +70,7 @@ const TitleForm = ({ initialData, courseId }: TitleFormProps) => {
   const editForm = (
     <Form {...form}>
       <form
-        className="flex items-center"
+        className="flex items-center gap-x-1"
         onSubmit={form.handleSubmit(handleFormSubmit)}
       >
         <FormField
