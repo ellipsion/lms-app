@@ -31,7 +31,7 @@ model Course {
   category   Category? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   attachments Attachment[]
-  Chapters    Chapter[]
+  chapters    Chapter[]
   purchases   Purchase[]
 
   createdAt DateTime @default(now())

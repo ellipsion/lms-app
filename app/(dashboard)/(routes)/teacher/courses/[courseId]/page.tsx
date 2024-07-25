@@ -17,6 +17,7 @@ import ImageForm from "./_components/image-form";
 import CategoryForm from "./_components/category-form";
 import PriceForm from "./_components/price-form";
 import AttachmentsForm from "./_components/attachments-form";
+import ChaptersForm from "./_components/chapters-form";
 
 interface PageProps {
   params: {
@@ -38,6 +39,11 @@ const CourseDetailPage = async ({ params }: PageProps) => {
       userId,
     },
     include: {
+      chapters: {
+        orderBy: {
+          position: "asc",
+        },
+      },
       attachments: {
         orderBy: {
           createdAt: "asc",
@@ -56,9 +62,16 @@ const CourseDetailPage = async ({ params }: PageProps) => {
     },
   });
 
-  const { title, description, price, imageUrl, categoryId } = course;
+  const { title, description, price, imageUrl, categoryId, chapters } = course;
 
-  const requiredFields = [title, description, price, imageUrl, categoryId];
+  const requiredFields = [
+    title,
+    description,
+    price,
+    imageUrl,
+    categoryId,
+    chapters.some((chapter) => chapter.isPublished),
+  ];
   const totalFields = requiredFields.length;
   const completedFields = requiredFields.filter(Boolean).length;
 
@@ -97,7 +110,7 @@ const CourseDetailPage = async ({ params }: PageProps) => {
               <IconBadge icon={ListChecks} />
               <h1 className="text-xl">Course chapters</h1>
             </div>
-            <div>TODO: chapters</div>
+            <ChaptersForm initialData={course} courseId={courseId} />
           </div>
           <div>
             <div className="flex items-center gap-x-2">
