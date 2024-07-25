@@ -57,7 +57,7 @@ const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
       toggleCreating();
       router.refresh();
     } catch (error) {
-      toast.error("Something went wrong.");
+      toast.error("Something went wrong");
     }
   };
 
@@ -114,8 +114,10 @@ const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
       {isCreating && editForm}
       {!isCreating && (
         <>
-          <p className={"text-sm mt-2 text-slate-500 italic"}>No chapters</p>
-          <p className={"text-sm mt-2 text-muted-foreground"}>
+          <p className={"text-sm mt-2 ml-2 text-slate-500 italic"}>
+            No chapters
+          </p>
+          <p className={"text-xs mt-4 text-muted-foreground"}>
             Drag and drop to reorder the chapters
           </p>
         </>
