@@ -4,7 +4,7 @@ import * as z from "zod";
 import axios from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { Course } from "@prisma/client";
+import { Chapter, Course } from "@prisma/client";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,49 +13,53 @@ import { Pencil } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-
+import { Textarea } from "@/components/ui/textarea";
 import {
   Form,
-  FormItem,
-  FormField,
   FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Combobox } from "@/components/ui/combobox";
+import Editor from "@/components/custom/editor";
+import Preview from "@/components/custom/preview";
+import { Checkbox } from "@/components/ui/checkbox";
 
-interface CategoryFormProps {
-  initialData: Course;
+interface ChapterAccessFormProps {
+  initialData: Chapter;
   courseId: string;
-  options: { label: string; value: string }[];
 }
 
 const formSchema = z.object({
-  categoryId: z.string().min(1, { message: "Category is required" }),
+  isFree: z.boolean().default(false),
 });
 
-const CategoryForm = ({
+export const ChapterAccessForm = ({
   initialData,
   courseId,
-  options,
-}: CategoryFormProps) => {
+}: ChapterAccessFormProps) => {
   const [isEditing, setEditing] = useState<boolean>(false);
   const router = useRouter();
-  const { categoryId } = initialData;
-  const selectedOption = options.find((option) => option.value === categoryId);
+  const { isFree, id: chapterId } = initialData;
 
   const toggleEditMode = () => setEditing((current) => !current);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { categoryId: categoryId || "" },
+    defaultValues: { isFree },
   });
 
   const { isSubmitting, isValid } = form.formState;
 
   const handleFormSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const response = await axios.patch(`/api/courses/${courseId}`, values);
-      toast.success("Course Updated");
+      const response = await axios.patch(
+        `/api/courses/${courseId}/chapters/${chapterId}`,
+        values
+      );
+      toast.success("Chapter Updated");
       toggleEditMode();
       router.refresh();
     } catch (error) {
@@ -81,12 +85,23 @@ const CategoryForm = ({
       <form className="" onSubmit={form.handleSubmit(handleFormSubmit)}>
         <FormField
           control={form.control}
-          name="categoryId"
+          name="isFree"
           render={({ field }) => (
-            <FormItem className="w-full">
-              <FormControl>
-                <Combobox options={options} {...field} name="category" />
-              </FormControl>
+            <FormItem className="w-full  my-3">
+              <div className="flex items-center gap-3 border p-2 rounded-md">
+                <FormControl>
+                  <Checkbox
+                    onCheckedChange={field.onChange}
+                    checked={field.value}
+                    onBlur={field.onBlur}
+                  />
+                </FormControl>
+                <FormLabel>Free for preview</FormLabel>
+              </div>
+              <FormDescription>
+                Check this box if you want this chapter to be available for free
+                preview
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -103,19 +118,27 @@ const CategoryForm = ({
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
       <div className="flex items-center justify-between font-medium">
-        <p className="text-sm text-slate-500">Course Category</p>
+        <p className="text-sm text-slate-500">Chapter access</p>
         {editButton}
       </div>
       {isEditing && editForm}
       {!isEditing && (
-        <p
-          className={cn("text-sm mt-2", !categoryId && "text-slate-500 italic")}
+        <div
+          className={cn(
+            "text-sm mt-2 text-slate-500 italic border rounded-md p-2"
+          )}
         >
-          {selectedOption?.label || "No category"}
-        </p>
+          {isFree ? (
+            <p>
+              This chapter is <strong>free</strong> for preview
+            </p>
+          ) : (
+            <p>
+              This chapter requires a <strong>paid</strong> subscription.
+            </p>
+          )}
+        </div>
       )}
     </div>
   );
 };
-
-export default CategoryForm;

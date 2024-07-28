@@ -91,3 +91,30 @@ body,
     width: 15px;
   }
 }
+
+.ql-toolbar {
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+}
+
+.ql-container {
+  border: none !important;
+  font-size: 16px !important;
+}
+
+.ql-container h1 {
+  font-size: 2rem !important;
+}
+
+.ql-container h2 {
+  font-size: 1.5rem !important;
+}
+
+.ql-container h3 {
+  font-size: 1.17rem !important;
+}
+
+.ql-container h4 {
+  font-size: 1rem !important;
+}

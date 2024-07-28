@@ -4,7 +4,7 @@ import * as z from "zod";
 import axios from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { Course } from "@prisma/client";
+import { Chapter, Course } from "@prisma/client";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,36 +21,42 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { formatPrice } from "@/lib/formats";
+import Editor from "@/components/custom/editor";
+import Preview from "@/components/custom/preview";
 
-interface PriceFormProps {
-  initialData: Course;
+interface ChapterDescriptionFormProps {
+  initialData: Chapter;
   courseId: string;
 }
 
 const formSchema = z.object({
-  price: z.coerce.number(),
+  description: z.string().min(1),
 });
 
-const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
+export const ChapterDescriptionForm = ({
+  initialData,
+  courseId,
+}: ChapterDescriptionFormProps) => {
   const [isEditing, setEditing] = useState<boolean>(false);
   const router = useRouter();
-  const { price } = initialData;
+  const { description, id: chapterId } = initialData;
 
   const toggleEditMode = () => setEditing((current) => !current);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { price: price || undefined },
+    defaultValues: { description: description || "" },
   });
 
   const { isSubmitting, isValid } = form.formState;
 
   const handleFormSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const response = await axios.patch(`/api/courses/${courseId}`, values);
-      toast.success("Course Updated");
+      const response = await axios.patch(
+        `/api/courses/${courseId}/chapters/${chapterId}`,
+        values
+      );
+      toast.success("Chapter Updated");
       toggleEditMode();
       router.refresh();
     } catch (error) {
@@ -73,20 +79,14 @@ const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
 
   const editForm = (
     <Form {...form}>
-      <form className="" onSubmit={form.handleSubmit(handleFormSubmit)}>
+      <form className="min-h-10" onSubmit={form.handleSubmit(handleFormSubmit)}>
         <FormField
           control={form.control}
-          name="price"
+          name="description"
           render={({ field }) => (
             <FormItem className="w-full">
               <FormControl>
-                <Input
-                  disabled={isSubmitting}
-                  type="number"
-                  step={0.01}
-                  placeholder="Set a price for your course"
-                  {...field}
-                />
+                <Editor {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -104,17 +104,25 @@ const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
       <div className="flex items-center justify-between font-medium">
-        <p className="text-sm text-slate-500">Course Price</p>
+        <p className="text-sm text-slate-500">Chapter Description</p>
         {editButton}
       </div>
       {isEditing && editForm}
       {!isEditing && (
-        <p className={cn("text-sm mt-2", !price && "text-slate-500 italic")}>
-          {price ? formatPrice(price) : "No price"}
-        </p>
+        <div
+          onClick={() => (!description ? toggleEditMode() : null)}
+          className={cn(
+            "relative text-sm mt-2 bg-white text-black rounded-md border min-h-32"
+          )}
+        >
+          <Preview value={description || ""} />
+          {!description && (
+            <p className="absolute top-2 left-2 italic text-slate-500">
+              Add a description...
+            </p>
+          )}
+        </div>
       )}
     </div>
   );
 };
-
-export default PriceForm;

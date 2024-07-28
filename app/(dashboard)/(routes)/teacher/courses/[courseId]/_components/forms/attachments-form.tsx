@@ -27,7 +27,10 @@ interface AttachmentsFormProps {
   courseId: string;
 }
 
-const AttachmentsForm = ({ initialData, courseId }: AttachmentsFormProps) => {
+export const AttachmentsForm = ({
+  initialData,
+  courseId,
+}: AttachmentsFormProps) => {
   const [isEditing, setEditing] = useState<boolean>(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const router = useRouter();
@@ -145,5 +148,3 @@ const DummyImage = () => {
     </div>
   );
 };
-
-export default AttachmentsForm;

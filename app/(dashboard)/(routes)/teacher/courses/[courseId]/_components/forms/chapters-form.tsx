@@ -4,12 +4,12 @@ import * as z from "zod";
 import axios from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { Course } from "@prisma/client";
+import { Chapter, Course } from "@prisma/client";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Pencil, PlusCircle } from "lucide-react";
+import { Loader2Icon, Pencil, PlusCircle } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -22,9 +22,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { ChaptersList } from "../chapters-list";
 
 interface ChaptersFormProps {
-  initialData: Course;
+  initialData: Course & { chapters: Chapter[] };
   courseId: string;
 }
 
@@ -32,7 +33,7 @@ const formSchema = z.object({
   title: z.string().min(1),
 });
 
-const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
+export const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
   const [isCreating, setCreating] = useState<boolean>(false);
   const [isUpdating, setUpdating] = useState<boolean>(false);
   const router = useRouter();
@@ -55,10 +56,31 @@ const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
       );
       toast.success("Chapter created");
       toggleCreating();
+      form.reset();
       router.refresh();
     } catch (error) {
       toast.error("Something went wrong");
     }
+  };
+
+  const onReorder = async (updateData: { id: string; position: number }[]) => {
+    try {
+      setUpdating(true);
+      const response = await axios.put(
+        `/api/courses/${courseId}/chapters/reorder`,
+        { list: updateData }
+      );
+      // toast.success("Chapters reordered");
+      router.refresh();
+    } catch (error) {
+      toast.error("Something went wrong reordering chapters");
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  const onEdit = (id: string) => {
+    router.push(`/teacher/courses/${courseId}/chapters/${id}`);
   };
 
   const editButton = (
@@ -90,7 +112,7 @@ const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
               <FormControl>
                 <Input
                   disabled={isSubmitting}
-                  placeholder="e.g. 'Introduction to the course'"
+                  placeholder="Chapter title"
                   {...field}
                 />
               </FormControl>
@@ -99,7 +121,7 @@ const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
           )}
         />
         <Button type="submit" size="sm" disabled={!isValid || isSubmitting}>
-          Create
+          Add
         </Button>
       </form>
     </Form>
@@ -111,19 +133,30 @@ const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
         <p className="text-sm text-slate-500">Course Chapters</p>
         {editButton}
       </div>
+
+      {!isCreating && !initialData.chapters.length && (
+        <p className={"text-sm mt-2 ml-2 text-slate-500 italic"}>No chapters</p>
+      )}
+      {initialData.chapters.length > 0 && (
+        <div className="relative">
+          {/* {isUpdating && (
+            <div className="absolute w-full h-full rounded flex justify-center items-center z-10 bg-white/10 backdrop-blur-sm">
+              <Loader2Icon className="w-5 h-5 animate-spin stroke-slate-500" />
+            </div>
+          )} */}
+          <ChaptersList
+            items={initialData.chapters || []}
+            onEdit={onEdit}
+            onReorder={onReorder}
+          />
+        </div>
+      )}
       {isCreating && editForm}
       {!isCreating && (
-        <>
-          <p className={"text-sm mt-2 ml-2 text-slate-500 italic"}>
-            No chapters
-          </p>
-          <p className={"text-xs mt-4 text-muted-foreground"}>
-            Drag and drop to reorder the chapters
-          </p>
-        </>
+        <p className={"text-xs mt-4 text-muted-foreground"}>
+          Drag and drop to reorder the chapters
+        </p>
       )}
     </div>
   );
 };
-
-export default ChaptersForm;

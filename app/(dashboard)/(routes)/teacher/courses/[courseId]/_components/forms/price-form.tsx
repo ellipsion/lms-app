@@ -21,26 +21,28 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { formatPrice } from "@/lib/formats";
 
-interface DescriptionFormProps {
+interface PriceFormProps {
   initialData: Course;
   courseId: string;
 }
 
 const formSchema = z.object({
-  description: z.string().min(1, { message: "Description is required" }),
+  price: z.coerce.number(),
 });
 
-const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
+export const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
   const [isEditing, setEditing] = useState<boolean>(false);
   const router = useRouter();
-  const { description } = initialData;
+  const { price } = initialData;
 
   const toggleEditMode = () => setEditing((current) => !current);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { description: description || "" },
+    defaultValues: { price: price || undefined },
   });
 
   const { isSubmitting, isValid } = form.formState;
@@ -74,13 +76,15 @@ const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
       <form className="" onSubmit={form.handleSubmit(handleFormSubmit)}>
         <FormField
           control={form.control}
-          name="description"
+          name="price"
           render={({ field }) => (
             <FormItem className="w-full">
               <FormControl>
-                <Textarea
+                <Input
                   disabled={isSubmitting}
-                  placeholder="e.g. 'This course is about...'"
+                  type="number"
+                  step={0.01}
+                  placeholder="Set a price for your course"
                   {...field}
                 />
               </FormControl>
@@ -100,22 +104,15 @@ const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
       <div className="flex items-center justify-between font-medium">
-        <p className="text-sm text-slate-500">Course Description</p>
+        <p className="text-sm text-slate-500">Course Price</p>
         {editButton}
       </div>
       {isEditing && editForm}
       {!isEditing && (
-        <p
-          className={cn(
-            "text-sm mt-2",
-            !description && "text-slate-500 italic"
-          )}
-        >
-          {description || "No description"}
+        <p className={cn("text-sm mt-2", !price && "text-slate-500 italic")}>
+          {price ? formatPrice(price) : "No price"}
         </p>
       )}
     </div>
   );
 };
-
-export default DescriptionForm;
