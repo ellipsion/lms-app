@@ -1,13 +1,11 @@
-import Mux from "@mux/mux-node"
+
 import { auth } from "@clerk/nextjs"
 import { NextResponse } from "next/server"
 
 import { prisma } from "@/lib/db"
+import { mux } from "@/lib/mux";
 
-const {video} = new Mux({
-    tokenId: process.env.MUX_ACCESS_TOKEN!,
-    tokenSecret: process.env.MUX_SECRET_KEY!
-})
+const {video} = mux;
 
 interface RouteParams {
     courseId: string; chapterId: string

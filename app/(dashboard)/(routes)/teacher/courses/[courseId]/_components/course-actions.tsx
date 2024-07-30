@@ -28,7 +28,7 @@ const CourseActions: FC<CourseActionsProps> = ({
       setLoading(true);
       const response = await axios.delete(`/api/courses/${courseId}`);
       toast.success("Course Deleted");
-      router.replace(`/teacher/courses/`);
+      router.replace(`/teacher/courses`);
       router.refresh();
     } catch (error) {
       toast.error("Something went wrong.");
