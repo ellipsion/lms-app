@@ -53,7 +53,10 @@ export async function PATCH(req: Request, {params}: {params: RouteParams}) {
             const existingMuxData = await prisma.muxData.findUnique({where: {chapterId}});
 
             if (existingMuxData) {
-                await video.assets.delete(existingMuxData.assetId);
+                const asset = await video.assets.retrieve(existingMuxData.assetId);
+                if (asset) {
+                    await video.assets.delete(asset.id);
+                }
                 await prisma.muxData.delete({
                     where: {
                         id: existingMuxData.id
@@ -65,7 +68,7 @@ export async function PATCH(req: Request, {params}: {params: RouteParams}) {
             const asset = await video.assets.create({
                 input: values.videoUrl,
                 playback_policy: ["public"],
-                test: false
+                test: true
             })
 
             // register the asset in database

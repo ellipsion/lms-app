@@ -6,6 +6,7 @@ import { prisma } from "@/lib/db";
 import Link from "next/link";
 import {
   ArrowLeftIcon,
+  BookDashedIcon,
   BookOpenIcon,
   EyeIcon,
   ListChecksIcon,
@@ -39,6 +40,7 @@ const ChapterDetailpage: FC<ChapterDetailpageProps> = async ({
     },
     include: {
       muxData: true,
+      course: true,
     },
   });
 
@@ -67,10 +69,10 @@ const ChapterDetailpage: FC<ChapterDetailpageProps> = async ({
         <div>
           <Link
             href={`/teacher/courses/${courseId}`}
-            className="flex items-center text-sm hover:opacity-75 transition mb-6"
+            className="flex items-center text-sm hover:opacity-75 h-9 transition mb-6"
           >
             <ArrowLeftIcon className="h-4 w-4 mr-2" />
-            Back to course setup
+            <h1 className="text-base">{chapter.course.title}</h1>
           </Link>
         </div>
         <div className="flex items-center justify-between">
