@@ -8,6 +8,7 @@ import CourseEnrollButton from "../../_components/course-enroll-btn";
 import { Separator } from "@/components/ui/separator";
 import Preview from "@/components/custom/preview";
 import { FileIcon, PaperclipIcon } from "lucide-react";
+import ProgressButton from "./_components/progress-button";
 
 interface ChapterDetailPageProps {
   params: { courseId: string; chapterId: string };
@@ -58,9 +59,16 @@ const ChapterDetailPage: FC<ChapterDetailPageProps> = async ({ params }) => {
           />
         </div>
         <div className="p-4 flex flex-col md:flex-row items-center justify-between">
-          <h2 className="text-2xl font-semibold mb-2">{chapter.title}</h2>
+          <h2 className="text-2xl font-semibold mb-2 text-center md:text-left">
+            {chapter.title}
+          </h2>
           {purchase ? (
-            <>{/* TODO: Progess */}</>
+            <ProgressButton
+              isCompleted={isCompleted || false}
+              nextChapterId={nextChapter?.id || null}
+              chapterId={chapterId}
+              courseId={courseId}
+            />
           ) : (
             <CourseEnrollButton
               courseId={courseId}
@@ -81,9 +89,9 @@ const ChapterDetailPage: FC<ChapterDetailPageProps> = async ({ params }) => {
                   href={attachment.url}
                   target="_blank"
                   key={attachment.id}
-                  className="flex items-center p-3 w-full bg-sky-200 border text-sky-700 rounded-md hover:underline"
+                  className="flex gap-2 items-center px-3 py-2 w-full bg-sky-100 border border-sky-200 text-sky-700 rounded-md hover:underline"
                 >
-                  <FileIcon />
+                  <FileIcon className="size-5" />
                   <p className="liine-clamp-1">{attachment.name}</p>
                 </a>
               ))}

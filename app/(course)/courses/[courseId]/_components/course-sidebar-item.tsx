@@ -34,7 +34,7 @@ const SidebarItem = ({
 
   const Icon = isLocked
     ? LockIcon
-    : isActive
+    : isActive && !isCompleted
     ? PlayIcon
     : isCompleted
     ? CheckSquare
@@ -47,18 +47,13 @@ const SidebarItem = ({
       className={cn(
         "group flex items-center text-sm font-medium text-center gap-x-2 text-slate-500 pl-6 transition-all hover:text-slate-600 hover:bg-slate-300/20",
         isActive &&
-          "text-slate-700 hover:text-sky-700 bg-slate-200/20 hover:bg-sky-200/20"
+          "text-slate-700 hover:text-sky-700 bg-slate-200/20 hover:bg-sky-200/20",
+        isCompleted &&
+          "text-emerald-600 hover:text-emerald-500 hover:bg-emerald-200/10"
       )}
     >
       <div className="flex items-center py-4 gap-2">
-        <Icon
-          size={18}
-          className={cn(
-            "text-slate-500 ",
-            isActive && "text-slate-700 group-hover:stroke-sky-700",
-            isActive && isCompleted && "text-emerald-500"
-          )}
-        />
+        <Icon size={18} />
         <span className="text-ellipsis overflow-hidden max-w-48 text-nowrap">
           {label}
         </span>
@@ -66,7 +61,8 @@ const SidebarItem = ({
       <div
         className={cn(
           "ml-auto opacity-0 border-2 border-slate-700 h-full",
-          isActive && "opacity-100"
+          isActive && "opacity-100",
+          isCompleted && "border-emerald-600"
         )}
       ></div>
     </button>
