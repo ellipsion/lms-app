@@ -37,8 +37,10 @@ const SearchPage: FC<PageProps> = async ({ searchParams }) => {
       <div className="px-6 pt-6 md:hidden md:mb-0 block">
         <SearchInput />
       </div>
+
       <div className="p-6">
         <Categories items={categories} />
+        <h1 className="text-2xl font-medium pt-5">Browse Courses</h1>
         <CoursesList courses={courses} />
       </div>
     </>

@@ -23,6 +23,7 @@ const SearchPage: FC = async () => {
             </button>
           ))}
         </div>
+        <Skeleton className="size-6 w-44 mt-10 mb-4"></Skeleton>
         <div className="mt-5 grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {new Array(4).fill(0).map((_) => (
             <div

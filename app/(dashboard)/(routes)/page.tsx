@@ -36,6 +36,7 @@ const page = async () => {
           />
         </div>
       </div>
+      <h1 className="text-2xl font-medium pt-5">My Courses</h1>
       <CoursesList courses={[...inProgressCourses, ...completedCourses]} />
     </div>
   );
