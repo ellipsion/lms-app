@@ -1,11 +1,12 @@
 "use client";
 
-import { UserButton } from "@clerk/nextjs";
+import { useAuth, UserButton } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 import Link from "next/link";
 import SearchInput from "./search-input";
+import { Skeleton } from "../ui/skeleton";
 
 const NavbarRoutes = () => {
   const pathname = usePathname();
@@ -36,7 +37,11 @@ const NavbarRoutes = () => {
             </Button>
           </Link>
         )}
-        <UserButton afterSignOutUrl="/sign-in" />
+
+        <div className="relative size-9 flex items-center justify-center">
+          <Skeleton className="absolute size-9 rounded-full" />
+          <UserButton afterSignOutUrl="/sign-in" />
+        </div>
       </div>
     </>
   );
