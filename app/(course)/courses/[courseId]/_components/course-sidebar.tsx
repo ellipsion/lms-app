@@ -1,5 +1,4 @@
 import { FC } from "react";
-import SidebarRoutes from "./sidebar-routes";
 import { CourseWithChapters } from "../layout";
 import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
